@@ -1,0 +1,72 @@
+.register-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: var(--background);
+    background-image: url('../../images/convo-bg2.png');
+    background-size: cover; 
+    background-position: center; 
+    background-repeat: no-repeat; 
+}
+
+.register-container h1 {
+    margin-bottom: 30px;
+    color: var(--text);
+    font-size: var(--h1-font);
+}
+
+.input-field {
+    width: 300px;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.sign-in-button {
+    width: 300px;
+    padding: 10px;
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 10px 0;
+    font-size: 16px;
+}
+
+.sign-in-button:hover {
+    background-color: var(--primary-dark);
+}
+
+.or-text {
+    margin: 20px 0;
+    font-size: 14px;
+    color: #777;
+}
+
+.google-sign-in-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 300px;
+    padding: 10px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.google-sign-in-button:hover {
+    background-color: #f1f1f1;
+}
+
+.google-logo {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+}

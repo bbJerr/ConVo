@@ -1,0 +1,64 @@
+/* =========== GOOGLE FONT =========== */
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Jost:ital,wght@0,100..900;1,100..900&family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+
+:root {
+  /* =========== COLORS =========== */
+  --text: #150f10;
+  --background: #f7f4f5;
+  --primary: #996f7a;
+  --primary-dark: #75565f;
+  --secondary: #c8b9b1;
+  --secondary-light: #e7dad2;
+  --accent: #ae9e8d;
+  --accent-light: #cfbfae;
+
+  /* =========== TYPOGRAPHY =========== */
+  --main-font: "Jost", sans-serif;
+  --h1-font: 50px;
+  --h2-font: 38px;
+  --h3-font: 24px;
+
+}
+
+/* Resets */
+ul {
+  list-style-type: none;
+}
+a {
+  text-decoration: none;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-decoration: none;
+  border: none;
+  outline: none;
+  scroll-behavior: smooth;
+  font-family: var(--main-font);
+}
+
+body {
+  min-height: 100vh;
+}
+
+.sign-out {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.sign-out button {
+  padding: 10px 20px;
+  background-color: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.sign-out button:hover {
+  background-color: #e06773;
+}

@@ -1,38 +1,38 @@
 import { useEffect, useState, useRef } from "react";
-import { addDoc, collection, serverTimestamp, onSnapshot, query, where, orderBy } from 'firebase/firestore';
+import { addDoc, collection, serverTimestamp, onSnapshot, query, where, doc, orderBy } from 'firebase/firestore';
 import { auth, db } from "../../config/firebase";
 import "./chatPage.css";
 
 const Chat = (props) => {   
-    const { room } = props;
+    const {room} = props;
     const [newMessage, setNewMessage] = useState("");
     const [messages, setMessages] = useState([]);
     const messagesEndRef = useRef(null);
 
     const messagesRef = collection(db, "messages");
 
-    useEffect(() => {
-        const queryMessages = query(
-            messagesRef, 
-            where("room", "==", room),
-            orderBy("createdAt")
-        );
-        const unsubscribe = onSnapshot(queryMessages, (snapshot) => {
-            let messages = [];
-            snapshot.forEach((doc) => {
-                messages.push({ ...doc.data(), id: doc.id });
+        useEffect(() => {
+            const queryMessages = query(
+                messagesRef, 
+                where("room", "==", room),
+                orderBy("createdAt")
+            );
+            const unsubscribe = onSnapshot(queryMessages, (snapshot) => {
+                let messages = [];
+                snapshot.forEach((doc) => {
+                    messages.push({...doc.data(), id: doc.id});
+                });
+                setMessages(messages);
             });
-            setMessages(messages);
-        });
-        return () => unsubscribe();
-    }, [room]);
+            return () => unsubscribe();
+        }, []);
 
     useEffect(() => {
         if (messagesEndRef.current) {
             messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
         }
     }, [messages]);
-
+    
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (newMessage === "") return;
@@ -48,29 +48,24 @@ const Chat = (props) => {
     };
 
     const goBack = () => {
-        window.location.href = "/"; 
+        window.location.href = "/";
     };
-
+    
     return (
         <div className="chat-bg">
             <div className="chat-container">
-                <button className="go-back-button" onClick={goBack}>
-                    <i className="fas fa-arrow-left"></i> Go Back
-                </button>
+                <button className="go-back-button" onClick={goBack}>← Back to Home</button>
                 <div className="header"> 
                     <h1>{room}</h1>
                 </div>
                 <div className="messages"> 
                     {messages.map((message) => (
-                        <div 
-                            className={`message ${message.user === auth.currentUser.displayName ? "own-message" : "other-message"}`} 
-                            key={message.id}
-                        >
-                            {message.user !== auth.currentUser.displayName && (
-                                <span className="user">{message.user}:</span>
-                            )}
-                            {message.text}
-                        </div>              
+                        <div className={`message ${message.user === auth.currentUser.displayName ? "own-message" : "other-message"}`} key={message.id}>
+                        {message.user !== auth.currentUser.displayName && (
+                        <span className="user">{message.user}:</span>
+                        )}
+                        {message.text}
+                    </div>              
                     ))}
                     <div ref={messagesEndRef} />
                 </div> 

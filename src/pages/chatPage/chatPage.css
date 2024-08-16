@@ -132,3 +132,17 @@
 .messages::-webkit-scrollbar-track {
     background-color: #f1f1f1;
 }
+
+@media (max-width: 1180px) {
+    .chat-container {
+        position: relative;
+    }
+
+    .go-back-button {
+        color:var(--secondary-light);
+    }
+    
+    .go-back-button:hover {
+        color: var(--secondary);
+    }
+}

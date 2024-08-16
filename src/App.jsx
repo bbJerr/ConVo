@@ -36,7 +36,7 @@ function App() {
         <HomePage setRoom={setRoom} />
       )}
       <div className="sign-out">
-        <button onClick={signUserOut}>Sign Out</button>
+        <button onClick={signUserOut}>Logout</button>
       </div>
     </>
   );

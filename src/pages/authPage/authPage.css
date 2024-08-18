@@ -43,7 +43,7 @@
 }
 
 .or-text {
-    margin: 20px 0;
+    margin: 15px 0;
     font-size: 14px;
     color: #777;
 }
@@ -69,4 +69,27 @@
     width: 20px;
     height: 20px;
     margin-right: 10px;
+}
+
+
+.error-message {
+    color: red;
+    margin-top: 10px;
+    font-size: 16px;
+  }
+
+.toggle-auth {
+    margin-top: 10px;
+}
+
+.link-transfer-mode {
+    background-color: transparent;
+    font-size: 16px;
+    color: var(--primary);
+}
+
+.link-transfer-mode:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+    cursor: pointer;
 }

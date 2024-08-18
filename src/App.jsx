@@ -1,3 +1,4 @@
+import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
 import { useState } from "react";
 import { signOut } from 'firebase/auth';
 import { auth } from "./config/firebase";
@@ -20,25 +21,18 @@ function App() {
     setRoom(null);
   };
 
-  if (!isAuth) {
-    return (
-      <div>
-        <Auth setIsAuth={setIsAuth} />
-      </div>
-    );
-  }
-
   return (
-    <>
-      {room ? (
-        <Chat room={room} />
-      ) : (
-        <HomePage setRoom={setRoom} />
+    <Router>
+      <Routes>
+        <Route path="/" element={isAuth ? <HomePage setRoom={setRoom} /> : <Auth setIsAuth={setIsAuth} />} />
+        <Route path="/chat" element={isAuth && room ? <Chat room={room} /> : <HomePage setRoom={setRoom} />} />
+      </Routes>
+      {isAuth && (
+        <div className="sign-out">
+          <button onClick={signUserOut}>Logout</button>
+        </div>
       )}
-      <div className="sign-out">
-        <button onClick={signUserOut}>Logout</button>
-      </div>
-    </>
+    </Router>
   );
 }
 

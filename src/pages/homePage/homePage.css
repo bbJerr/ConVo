@@ -39,4 +39,28 @@
 .enter-chat:hover {
     background-color: var(--primary-dark);
 }
+
+.previous-rooms ul {
+    list-style-type: none; /* Remove default list styling */
+    padding: 0;
+    margin: 0;
+    width: 600px;
+  }
+  
+.previous-rooms li {
+    padding: 20px;
+    border-radius: 5px; 
+    /* background-image: url('../../images/convo-bg.png'); 
+    background-size: cover; 
+    background-position: center; 
+    background-repeat: no-repeat;  */
+    margin-bottom: 5px; 
+    cursor: pointer;
+    transition: background-color 0.3s; 
+    background-color: var(--accent);
+}
+  
+.previous-rooms li:hover {
+    opacity: 0.8; 
+}
   

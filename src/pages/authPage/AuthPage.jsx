@@ -3,7 +3,7 @@ import { auth, googleProvider, db } from "../../config/firebase";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, updateProfile } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import Cookies from "universal-cookie";
-import GoogleLogo from "../../images/googlelogo.png";
+import GoogleLogo from "../../images/googleLogo.png";
 import "./authPage.css";
 
 const cookies = new Cookies();

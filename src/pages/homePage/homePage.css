@@ -50,55 +50,68 @@
     border-radius: 5px;
     cursor: pointer;
 }
-  
+
 .enter-chat:hover {
     background-color: var(--primary-dark);
 }
 
-.previous-rooms ul {
-    list-style-type: none; /* Remove default list styling */
+.room-list {
+    width: 1010px;
+}
+
+.room-list ul {
+    list-style-type: none; 
     padding: 0;
     margin: 0;
-    width: 1000px;
-  }
-  
-.previous-rooms li {
+}
+
+.room-list li {
     padding: 20px;
-    border-radius: 5px; 
-    /* background-image: url('../../images/convo-bg.png'); 
-    background-size: cover; 
-    background-position: center; 
-    background-repeat: no-repeat;  */
-    margin-bottom: 5px; 
+    border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s; 
-    background-color: var(--accent-light);
+    transition: background-color 0.3s;
+    background-color: var(--primary);
     font-size: var(--h3-font);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border: 1px solid var(--accent);
+    border: 1px solid var(--primary-dark);
+    margin-bottom: 5px;
 }
-  
-.previous-rooms li:hover {
+
+.room-list li:hover {
+    background-color: var(--primary-dark);
+}
+
+.room-list-name {
+    margin-bottom: 15px;
+}
+
+.user-names {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    padding: 0;
+    margin: 0;
+}
+
+.user-names li {
+    padding: 8px 15px; 
+    border-radius: 50px;
+    background-color: var(--accent);
+    font-size: var(--h4-font);
+    border: 1px solid var(--primary);
+    margin: 2px; 
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+    min-width: 80px; 
+    max-width: 150px;
+    white-space: nowrap;
+    overflow: hidden; 
+    text-overflow: ellipsis;
+}
+
+.user-names li:hover {
     background-color: var(--accent);
 }
 
-.room-item {
-    display: flex;
-    justify-content: space-between;
-  }
-  
-  .room-name {
-    font-weight: bold;
-  }
-  
-  .room-users {
-    display: flex;
-    flex-wrap: wrap;
-  }
-  
-  .room-user {
-    margin-left: 5px;
-    font-size: 0.9em;
-    color: #555;
-  }
-  

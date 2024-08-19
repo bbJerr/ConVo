@@ -25,7 +25,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={isAuth ? <HomePage setRoom={setRoom} /> : <Auth setIsAuth={setIsAuth} />} />
-        <Route path="/chat" element={isAuth && room ? <Chat room={room} /> : <HomePage setRoom={setRoom} />} />
+        <Route path="/chat" element={isAuth && room ? <Chat room={room} /> : (isAuth ? <HomePage setRoom={setRoom} /> : <Auth setIsAuth={setIsAuth} />)} />
       </Routes>
       {isAuth && (
         <div className="sign-out">

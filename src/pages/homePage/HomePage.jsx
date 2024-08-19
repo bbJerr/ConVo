@@ -161,7 +161,7 @@ const HomePage = ({ setRoom }) => {
           <button className="enter-chat" onClick={enterChatRoom}>Enter</button>
         </div>
       </div>
-      <div className="previous-rooms">
+      <div className="room-list">
         {userRooms.length > 0 ? (
           <ul>
             {userRooms.map((room, index) => (
@@ -169,9 +169,9 @@ const HomePage = ({ setRoom }) => {
                 setRoom(room);
                 navigate('/chat'); 
               }}>
-                {room}
+                <div className="room-list-name">{room}</div>
                 {roomUsers[room] && roomUsers[room].length > 0 && (
-                  <ul>
+                  <ul className="user-names">
                     {roomUsers[room].map((user, i) => (
                       <li key={i}>{user}</li>
                     ))}
@@ -181,7 +181,7 @@ const HomePage = ({ setRoom }) => {
             ))}
           </ul>
         ) : (
-          <p>No previous rooms</p>
+          <p>No chat rooms joined yet</p>
         )}
       </div>
     </div>

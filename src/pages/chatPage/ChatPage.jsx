@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { addDoc, collection, serverTimestamp, onSnapshot, query, where, orderBy } from 'firebase/firestore';
 import { auth, db } from "../../config/firebase";
 import { useNavigate } from 'react-router-dom';
+import { FaArrowLeft } from "react-icons/fa";
 import "./chatPage.css";
 
 const Chat = (props) => {   
@@ -55,7 +56,7 @@ const Chat = (props) => {
   return (
     <div className="chat-bg">
       <div className="chat-container">
-        <button className="go-back-button" onClick={goBack}>← Back to Home</button>
+        <button className="go-back-button" onClick={goBack}><FaArrowLeft /></button>
         <div className="header"> 
           <h1>{room}</h1>
         </div>

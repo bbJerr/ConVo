@@ -81,4 +81,24 @@
 .previous-rooms li:hover {
     background-color: var(--accent);
 }
+
+.room-item {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .room-name {
+    font-weight: bold;
+  }
+  
+  .room-users {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .room-user {
+    margin-left: 5px;
+    font-size: 0.9em;
+    color: #555;
+  }
   

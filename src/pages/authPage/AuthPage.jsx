@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { auth, googleProvider } from "../../config/firebase";
+import { auth, googleProvider, db } from "../../config/firebase";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, updateProfile } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
 import Cookies from "universal-cookie";
 import GoogleLogo from "../../images/googlelogo.png";
 import "./authPage.css";
@@ -57,10 +58,14 @@ const AuthPage = (props) => {
                 // Update the user's profile with their name
                 if (user) {
                     await updateProfile(user, { displayName: name });
-                }
 
-                cookies.set("auth-token", user.refreshToken);
-                setIsAuth(true);
+                    // Create a document in the users collection
+                    const userRef = doc(db, 'users', user.uid);
+                    await setDoc(userRef, { name });
+
+                    cookies.set("auth-token", user.refreshToken);
+                    setIsAuth(true);
+                }
             } catch (error) {
                 console.error("Error during authentication:", error.message);
                 setError(getErrorMessage(error.code)); // Set the user-friendly error message
@@ -83,7 +88,13 @@ const AuthPage = (props) => {
     const signInWithGoogle = async () => {
         try {
             const result = await signInWithPopup(auth, googleProvider);
-            cookies.set("auth-token", result.user.refreshToken);
+            const user = result.user;
+            cookies.set("auth-token", user.refreshToken);
+
+            // Create a document in the users collection for Google sign-in
+            const userRef = doc(db, 'users', user.uid);
+            await setDoc(userRef, { name: user.displayName || 'Anonymous' });
+
             setIsAuth(true);
         } catch (error) {
             console.error("Error signing in with Google:", error.message);

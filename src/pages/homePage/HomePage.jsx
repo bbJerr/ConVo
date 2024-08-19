@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { auth, db } from "../../config/firebase";
-import { collection, doc, getDoc, updateDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc, setDoc } from "firebase/firestore";
 import { useNavigate } from 'react-router-dom';
 import "./homePage.css";
 
@@ -62,10 +62,8 @@ const loadRoomUsers = async (roomName) => {
         return userDoc.exists() ? userDoc.data().name : uid;
       });
       const userNames = await Promise.all(userNamesPromises);
-      console.log(`Fetched users for room ${roomName}:`, userNames);
       return userNames;
     } else {
-      console.log(`No users found for room ${roomName}`);
       return [];
     }
   } catch (error) {
@@ -78,21 +76,36 @@ const HomePage = ({ setRoom }) => {
   const [userRooms, setUserRooms] = useState([]);
   const [roomUsers, setRoomUsers] = useState({});
   const [newRoom, setNewRoom] = useState("");
-  const userId = auth.currentUser?.uid;
+  const [loading, setLoading] = useState(true);
+  const [userId, setUserId] = useState(null); // Add state for userId
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Ensure authentication state is fully initialized
+    const unsubscribe = auth.onAuthStateChanged(user => {
+      if (user) {
+        setUserId(user.uid);
+      } else {
+        console.error("No user ID available");
+        setLoading(false); // Stop loading if no user
+      }
+    });
+
+    return () => unsubscribe(); // Cleanup subscription on unmount
+  }, []);
 
   useEffect(() => {
     const fetchUserRooms = async () => {
       if (userId) {
         try {
+          console.log("Fetching rooms for user:", userId);
           const rooms = await loadUserRooms(userId);
           console.log("Fetched rooms:", rooms);
           setUserRooms(rooms);
 
           const usersPromises = rooms.map(room => loadRoomUsers(room));
           const usersResults = await Promise.all(usersPromises);
-          console.log("Fetched room users:", usersResults);
-          
+
           const roomUsersData = rooms.reduce((acc, room, index) => {
             acc[room] = usersResults[index];
             return acc;
@@ -101,12 +114,14 @@ const HomePage = ({ setRoom }) => {
           setRoomUsers(roomUsersData);
         } catch (error) {
           console.error("Error fetching rooms:", error);
+        } finally {
+          setLoading(false);
         }
       }
     };
 
     fetchUserRooms();
-  }, [userId]);
+  }, [userId]); // Depend on userId
 
   const enterChatRoom = async () => {
     if (newRoom.trim()) {
@@ -116,7 +131,6 @@ const HomePage = ({ setRoom }) => {
       if (userId) {
         try {
           console.log(`Saving room ${roomName} for user ${userId}`);
-
           await saveRoomToFirestore(userId, roomName);
           await addUserToRoom(roomName, userId);
 
@@ -162,7 +176,9 @@ const HomePage = ({ setRoom }) => {
         </div>
       </div>
       <div className="room-list">
-        {userRooms.length > 0 ? (
+        {loading ? (
+          <p>Loading chat rooms...</p>
+        ) : userRooms.length > 0 ? (
           <ul>
             {userRooms.map((room, index) => (
               <li key={index} onClick={() => {

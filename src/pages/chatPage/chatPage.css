@@ -44,8 +44,8 @@
     text-align: center;
     font-size: var(--h3-font);
     font-weight: bold;
-    word-wrap: break-word; /* Ensures long words break */
-    overflow-wrap: break-word; /* Modern alternative to word-wrap */
+    word-wrap: break-word; 
+    overflow-wrap: break-word; 
 }
 
 .messages {

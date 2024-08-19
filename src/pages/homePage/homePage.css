@@ -104,11 +104,7 @@
     display: flex;
     align-items: center;
     justify-content: center; 
-    min-width: 80px; 
-    max-width: 150px;
-    white-space: nowrap;
-    overflow: hidden; 
-    text-overflow: ellipsis;
+    width: auto;
 }
 
 .user-names li:hover {

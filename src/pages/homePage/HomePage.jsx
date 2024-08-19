@@ -72,15 +72,19 @@ const HomePage = ({ setRoom }) => {
 
   return (
     <div className="room">
-      <label className="room-label">Enter Room Name:</label>
-      <input
-        className="room-name-input"
-        value={newRoom}
-        onChange={(e) => setNewRoom(e.target.value)}
-        onKeyPress={handleKeyPress}
-        placeholder="Type room name"
-      />
-      <button className="enter-chat" onClick={enterChatRoom}>Enter Chat</button>
+      <div className="room-label-container">
+        <label className="room-label">Enter Chat Room:</label>
+        <div className="room-input-container">
+          <input
+            className="room-name-input"
+            value={newRoom}
+            onChange={(e) => setNewRoom(e.target.value)}
+            onKeyPress={handleKeyPress}
+            placeholder="Type room name"
+          />
+          <button className="enter-chat" onClick={enterChatRoom}>Enter</button>
+        </div>
+      </div>
       <div className="previous-rooms">
         {userRooms.length > 0 ? (
           <ul>

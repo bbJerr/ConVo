@@ -135,3 +135,9 @@
 .messages::-webkit-scrollbar-track {
     background-color: #f1f1f1;
 }
+
+.typing-indicator {
+    font-style: italic;
+    color: var(--primary);
+    margin-bottom: 10px; 
+}

@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { signOut } from 'firebase/auth';
 import { auth } from "./config/firebase";
 import Auth from "./pages/authPage/AuthPage";
@@ -12,14 +12,19 @@ const cookies = new Cookies();
 
 function App() {
   const [isAuth, setIsAuth] = useState(cookies.get("auth-token"));
-  const [room, setRoom] = useState(null);
+  const [room, setRoom] = useState(localStorage.getItem("currentRoom") || null);
 
   const signUserOut = async () => {
     await signOut(auth);
     cookies.remove("auth-token");
     setIsAuth(false);
     setRoom(null);
+    localStorage.removeItem("currentRoom");
   };
+
+  useEffect(() => {
+    localStorage.setItem("currentRoom", room);
+  }, [room]);
 
   return (
     <Router>
@@ -34,7 +39,6 @@ function App() {
 
 function LogoutButton({ signUserOut }) {
   const location = useLocation();
-
   const showLogoutButton = location.pathname === '/' || location.pathname === '/room';
 
   return showLogoutButton ? (

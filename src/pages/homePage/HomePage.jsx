@@ -151,25 +151,26 @@ const HomePage = ({ setRoom }) => {
     if (newRoom.trim()) {
       const roomName = newRoom.trim();
       setRoom(roomName);
-
+      localStorage.setItem("currentRoom", roomName);
+  
       if (userId) {
         try {
           await saveRoomToFirestore(userId, roomName);
           await addUserToRoom(roomName, userId);
-
+  
           const roomUsersRef = doc(db, 'roomUsers', roomName);
           const roomUsersDoc = await getDoc(roomUsersRef);
-
+  
           if (!roomUsersDoc.exists()) {
             await setDoc(roomUsersRef, { users: [] });
           }
-
+  
           setUserRooms(prev => [...prev, roomName]);
         } catch (error) {
           console.error("Error saving room to Firestore:", error);
         }
       }
-
+  
       setNewRoom("");
       navigate('/chat');
     }

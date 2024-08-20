@@ -7,6 +7,7 @@
     min-height: 100vh;
     background-image: url('../../images/convo-bg.png');
     background-size: cover;
+    background-attachment: fixed;
     background-position: center;
     background-repeat: no-repeat;
 }
@@ -96,7 +97,6 @@
 .user-names {
     display: flex;
     flex-wrap: wrap;
-    gap: 5px;
     padding: 0;
     margin: 0;
 }
@@ -196,6 +196,14 @@
 
     .room-name-input, .enter-chat {
         font-size: var(--h4-font);
+    }
+
+    .room-list-name {
+        font-size: var(--h4-font);
+        margin-bottom: 5px;
+    }
+    .user-names li {
+        font-size: 16px;
     }
 }
 

@@ -3,7 +3,7 @@ import { useState } from "react";
 import { signOut } from 'firebase/auth';
 import { auth } from "./config/firebase";
 import Auth from "./pages/authPage/AuthPage";
-import HomePage from "./pages/homePage/HomePage";
+import Home from "./pages/homePage/HomePage";
 import Chat from "./pages/chatPage/ChatPage";
 import Cookies from "universal-cookie";
 import "./App.css";
@@ -24,8 +24,8 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={isAuth ? <HomePage setRoom={setRoom} /> : <Auth setIsAuth={setIsAuth} />} />
-        <Route path="/chat" element={isAuth && room ? <Chat room={room} /> : (isAuth ? <HomePage setRoom={setRoom} /> : <Auth setIsAuth={setIsAuth} />)} />
+        <Route path="/" element={isAuth ? <Home setRoom={setRoom} /> : <Auth setIsAuth={setIsAuth} />} />
+        <Route path="/chat" element={isAuth && room ? <Chat room={room} /> : (isAuth ? <Home setRoom={setRoom} /> : <Auth setIsAuth={setIsAuth} />)} />
       </Routes>
       {isAuth && <LogoutButton signUserOut={signUserOut} />}
     </Router>

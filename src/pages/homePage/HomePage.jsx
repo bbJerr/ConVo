@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { auth, db } from "../../config/firebase";
-import { doc, getDoc, updateDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc, setDoc, arrayRemove } from "firebase/firestore";
 import { useNavigate } from 'react-router-dom';
+import { FaEllipsisV } from "react-icons/fa";
 import "./homePage.css";
 
 // Function to save a room to Firestore
@@ -33,6 +34,32 @@ const addUserToRoom = async (roomName, userId) => {
     }
   } else {
     await setDoc(roomUsersRef, { users: [userId] });
+  }
+};
+
+// Function to remove a room from Firestore
+const removeRoomFromFirestore = async (userId, roomName) => {
+  const userRoomsRef = doc(db, 'userRooms', userId);
+  const userRoomsDoc = await getDoc(userRoomsRef);
+
+  if (userRoomsDoc.exists()) {
+    const rooms = userRoomsDoc.data().rooms || [];
+    if (rooms.includes(roomName)) {
+      await updateDoc(userRoomsRef, { rooms: arrayRemove(roomName) });
+    }
+  }
+};
+
+// Function to remove a user from a specific room
+const removeUserFromRoom = async (roomName, userId) => {
+  const roomUsersRef = doc(db, 'roomUsers', roomName);
+  const roomUsersDoc = await getDoc(roomUsersRef);
+
+  if (roomUsersDoc.exists()) {
+    const existingUsers = roomUsersDoc.data().users || [];
+    if (existingUsers.includes(userId)) {
+      await updateDoc(roomUsersRef, { users: arrayRemove(userId) });
+    }
   }
 };
 
@@ -77,30 +104,27 @@ const HomePage = ({ setRoom }) => {
   const [roomUsers, setRoomUsers] = useState({});
   const [newRoom, setNewRoom] = useState("");
   const [loading, setLoading] = useState(true);
-  const [userId, setUserId] = useState(null); // Add state for userId
+  const [userId, setUserId] = useState(null); 
+  const [showOptions, setShowOptions] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Ensure authentication state is fully initialized
     const unsubscribe = auth.onAuthStateChanged(user => {
       if (user) {
         setUserId(user.uid);
       } else {
-        console.error("No user ID available");
-        setLoading(false); // Stop loading if no user
+        setLoading(false);
       }
     });
 
-    return () => unsubscribe(); // Cleanup subscription on unmount
+    return () => unsubscribe();
   }, []);
 
   useEffect(() => {
     const fetchUserRooms = async () => {
       if (userId) {
         try {
-          console.log("Fetching rooms for user:", userId);
           const rooms = await loadUserRooms(userId);
-          console.log("Fetched rooms:", rooms);
           setUserRooms(rooms);
 
           const usersPromises = rooms.map(room => loadRoomUsers(room));
@@ -110,7 +134,7 @@ const HomePage = ({ setRoom }) => {
             acc[room] = usersResults[index];
             return acc;
           }, {});
-          
+
           setRoomUsers(roomUsersData);
         } catch (error) {
           console.error("Error fetching rooms:", error);
@@ -121,7 +145,7 @@ const HomePage = ({ setRoom }) => {
     };
 
     fetchUserRooms();
-  }, [userId]); // Depend on userId
+  }, [userId]);
 
   const enterChatRoom = async () => {
     if (newRoom.trim()) {
@@ -130,7 +154,6 @@ const HomePage = ({ setRoom }) => {
 
       if (userId) {
         try {
-          console.log(`Saving room ${roomName} for user ${userId}`);
           await saveRoomToFirestore(userId, roomName);
           await addUserToRoom(roomName, userId);
 
@@ -139,11 +162,9 @@ const HomePage = ({ setRoom }) => {
 
           if (!roomUsersDoc.exists()) {
             await setDoc(roomUsersRef, { users: [] });
-            console.log(`Room ${roomName} created in roomUsers collection.`);
           }
 
           setUserRooms(prev => [...prev, roomName]);
-          console.log("Room saved and state updated.");
         } catch (error) {
           console.error("Error saving room to Firestore:", error);
         }
@@ -152,6 +173,25 @@ const HomePage = ({ setRoom }) => {
       setNewRoom("");
       navigate('/chat');
     }
+  };
+
+  const handleLeaveRoom = async (roomName) => {
+    if (userId) {
+      try {
+        await removeRoomFromFirestore(userId, roomName);
+        await removeUserFromRoom(roomName, userId);
+        setUserRooms(prev => prev.filter(room => room !== roomName));
+      } catch (error) {
+        console.error("Error removing room:", error);
+      }
+    }
+  };
+
+  const handleOptionsToggle = (roomName) => {
+    setShowOptions(prev => ({
+      ...prev,
+      [roomName]: !prev[roomName],
+    }));
   };
 
   const handleKeyPress = (event) => {
@@ -183,9 +223,33 @@ const HomePage = ({ setRoom }) => {
             {userRooms.map((room, index) => (
               <li key={index} onClick={() => {
                 setRoom(room);
-                navigate('/chat'); 
+                navigate('/chat');
               }}>
-                <div className="room-list-name">{room}</div>
+                <div className="room-list-item">
+                  <div className="room-list-name">
+                    {room}
+                  </div>
+                  <FaEllipsisV
+                    className="options-icon"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleOptionsToggle(room);
+                    }}
+                  />
+                </div>
+                {showOptions[room] && (
+                  <div className="options-dropdown">
+                    <button
+                      className="leave-room"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleLeaveRoom(room);
+                      }}
+                    >
+                      Leave Room
+                    </button>
+                  </div>
+                )}
                 {roomUsers[room] && roomUsers[room].length > 0 && (
                   <ul className="user-names">
                     {roomUsers[room].map((user, i) => (

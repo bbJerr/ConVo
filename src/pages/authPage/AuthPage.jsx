@@ -13,10 +13,10 @@ const AuthPage = (props) => {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState(""); // For confirming the password
-    const [name, setName] = useState(""); // For collecting user name
-    const [isRegistering, setIsRegistering] = useState(false); // Show sign-in mode first
-    const [error, setError] = useState(""); // For storing error messages
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [name, setName] = useState("");
+    const [isRegistering, setIsRegistering] = useState(false);
+    const [error, setError] = useState("");
 
     const getErrorMessage = (errorCode) => {
         switch (errorCode) {
@@ -51,15 +51,12 @@ const AuthPage = (props) => {
                 return;
             }
             try {
-                // Register
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
 
-                // Update the user's profile with their name
                 if (user) {
                     await updateProfile(user, { displayName: name });
 
-                    // Create a document in the users collection
                     const userRef = doc(db, 'users', user.uid);
                     await setDoc(userRef, { name });
 
@@ -68,11 +65,10 @@ const AuthPage = (props) => {
                 }
             } catch (error) {
                 console.error("Error during authentication:", error.message);
-                setError(getErrorMessage(error.code)); // Set the user-friendly error message
+                setError(getErrorMessage(error.code));
             }
         } else {
             try {
-                // Sign in
                 const userCredential = await signInWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
 
@@ -80,7 +76,7 @@ const AuthPage = (props) => {
                 setIsAuth(true);
             } catch (error) {
                 console.error("Error during authentication:", error.message);
-                setError(getErrorMessage(error.code)); // Set the user-friendly error message
+                setError(getErrorMessage(error.code));
             }
         }
     };
@@ -91,14 +87,13 @@ const AuthPage = (props) => {
             const user = result.user;
             cookies.set("auth-token", user.refreshToken);
 
-            // Create a document in the users collection for Google sign-in
             const userRef = doc(db, 'users', user.uid);
             await setDoc(userRef, { name: user.displayName || 'Anonymous' });
 
             setIsAuth(true);
         } catch (error) {
             console.error("Error signing in with Google:", error.message);
-            setError(getErrorMessage(error.code)); // Set the user-friendly error message
+            setError(getErrorMessage(error.code)); 
         }
     };
 
@@ -143,7 +138,7 @@ const AuthPage = (props) => {
                     onKeyPress={handleKeyPress}
                 />
             )}
-            {error && <p className="error-message">{error}</p>} {/* Display error message */}
+            {error && <p className="error-message">{error}</p>}
             <button className="sign-in-button" onClick={handleAuth}>
                 {isRegistering ? "Sign Up" : "Sign In"}
             </button>

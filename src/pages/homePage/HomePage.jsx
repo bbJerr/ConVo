@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 import { FaEllipsisV } from "react-icons/fa";
 import "./homePage.css";
 
-// Function to save a room to Firestore
 const saveRoomToFirestore = async (userId, roomName) => {
   const userRoomsRef = doc(db, 'userRooms', userId);
   const userRoomsDoc = await getDoc(userRoomsRef);
@@ -21,7 +20,6 @@ const saveRoomToFirestore = async (userId, roomName) => {
   }
 };
 
-// Function to add a user to a specific room
 const addUserToRoom = async (roomName, userId) => {
   const roomUsersRef = doc(db, 'roomUsers', roomName);
   const roomUsersDoc = await getDoc(roomUsersRef);
@@ -37,7 +35,6 @@ const addUserToRoom = async (roomName, userId) => {
   }
 };
 
-// Function to remove a room from Firestore
 const removeRoomFromFirestore = async (userId, roomName) => {
   const userRoomsRef = doc(db, 'userRooms', userId);
   const userRoomsDoc = await getDoc(userRoomsRef);
@@ -50,7 +47,6 @@ const removeRoomFromFirestore = async (userId, roomName) => {
   }
 };
 
-// Function to remove a user from a specific room
 const removeUserFromRoom = async (roomName, userId) => {
   const roomUsersRef = doc(db, 'roomUsers', roomName);
   const roomUsersDoc = await getDoc(roomUsersRef);
@@ -63,7 +59,6 @@ const removeUserFromRoom = async (roomName, userId) => {
   }
 };
 
-// Function to load user rooms from Firestore
 const loadUserRooms = async (userId) => {
   const userRoomsRef = doc(db, 'userRooms', userId);
   const userRoomsDoc = await getDoc(userRoomsRef);
@@ -75,7 +70,6 @@ const loadUserRooms = async (userId) => {
   }
 };
 
-// Function to load users of a specific room
 const loadRoomUsers = async (roomName) => {
   try {
     const roomUsersRef = doc(db, 'roomUsers', roomName);

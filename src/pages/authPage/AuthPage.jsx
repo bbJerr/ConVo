@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth, googleProvider, db } from "../../config/firebase";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, updateProfile } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 import Cookies from "universal-cookie";
 import GoogleLogo from "../../images/googleLogo.png";
 import "./authPage.css";
@@ -106,9 +106,18 @@ const AuthPage = (props) => {
             try {
                 const userCredential = await signInWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
-
+    
+                const userRef = doc(db, 'users', user.uid);
+                const userDoc = await getDoc(userRef);
+    
+                if (userDoc.exists()) {
+                    const existingBio = userDoc.data().bio || '';
+                    await setDoc(userRef, { bio: existingBio }, { merge: true });
+                }
+    
                 cookies.set("auth-token", user.refreshToken);
                 setIsAuth(true);
+                navigate("/");
             } catch (error) {
                 console.error("Error during authentication:", error.message);
                 setError(getErrorMessage(error.code));
@@ -129,21 +138,27 @@ const AuthPage = (props) => {
             const result = await signInWithPopup(auth, googleProvider);
             const user = result.user;
             cookies.set("auth-token", user.refreshToken);
-
+    
             const userRef = doc(db, 'users', user.uid);
+            const userDoc = await getDoc(userRef);
+    
+            const bio = userDoc.exists() ? userDoc.data().bio : '';
+            const profilePic = userDoc.exists() ? userDoc.data().profilePic : user.photoURL || '';
+    
             await setDoc(userRef, { 
                 name: user.displayName || 'Anonymous',
-                bio: '',
-                profilePic: user.photoURL || '',
+                bio: bio,
+                profilePic: profilePic, 
             }, { merge: true });
-
+    
             setIsAuth(true);
             navigate("/");
+    
         } catch (error) {
             console.error("Error signing in with Google:", error.message);
-            setError(getErrorMessage(error.code)); 
+            setError(getErrorMessage(error.code));
         }
-    };
+    };    
 
     const handleKeyPress = (event) => {
         if (event.key === 'Enter') {

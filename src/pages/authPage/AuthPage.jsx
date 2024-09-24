@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { auth, googleProvider, db } from "../../config/firebase";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, updateProfile } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
@@ -17,6 +17,9 @@ const AuthPage = (props) => {
     const [name, setName] = useState("");
     const [isRegistering, setIsRegistering] = useState(false);
     const [error, setError] = useState("");
+    const [loginAttempts, setLoginAttempts] = useState(0); 
+    const [isLockedOut, setIsLockedOut] = useState(false); 
+    const [lockoutTimer, setLockoutTimer] = useState(0); 
 
     const getErrorMessage = (errorCode) => {
         switch (errorCode) {
@@ -30,8 +33,6 @@ const AuthPage = (props) => {
                 return 'Incorrect password.';
             case 'auth/email-already-in-use':
                 return 'Email is already in use.';
-            case 'auth/weak-password':
-                return 'Password should be at least 6 characters.';
             case 'auth/invalid-credential':
                 return 'Invalid credentials provided.';
             default:
@@ -39,9 +40,36 @@ const AuthPage = (props) => {
         }
     };
 
+    useEffect(() => {
+        if (isLockedOut) {
+            const timer = setInterval(() => {
+                setLockoutTimer(prev => {
+                    if (prev === 1) {
+                        setIsLockedOut(false);
+                        setLoginAttempts(0);
+                        clearInterval(timer);
+                    }
+                    return prev - 1;
+                });
+            }, 1000);
+
+            return () => clearInterval(timer);
+        }
+    }, [isLockedOut]);
+
     const handleAuth = async () => {
+        if (!isRegistering && isLockedOut) {
+            setError(`Too many failed attempts. Please try again in ${lockoutTimer} seconds.`);
+            return;
+        }
+
         if (!email || !password || (isRegistering && (!name || !confirmPassword))) {
             setError("Please fill in all fields.");
+            return;
+        }
+
+        if (password.length < 8 || password.length > 20) {
+            setError("Password must be between 8 and 20 characters.");
             return;
         }
 
@@ -77,6 +105,14 @@ const AuthPage = (props) => {
             } catch (error) {
                 console.error("Error during authentication:", error.message);
                 setError(getErrorMessage(error.code));
+
+                setLoginAttempts(prev => prev + 1);
+
+                if (loginAttempts + 1 > 3) {
+                    setIsLockedOut(true);
+                    setLockoutTimer(300); 
+                    setError("Too many failed attempts. You are locked out for 5 minutes.");
+                }
             }
         }
     };
@@ -103,6 +139,16 @@ const AuthPage = (props) => {
         }
     };
 
+    const toggleAuthMode = () => {
+        setIsRegistering(!isRegistering);
+        setError("");
+    };
+
+    const handleInputFocus = () => {
+        setError("");
+    };
+
+
     return (
         <div className="register-container">
             <h1>{isRegistering ? "Join Us" : "Sign In"}</h1>
@@ -113,6 +159,7 @@ const AuthPage = (props) => {
                     className="input-field"
                     onChange={(e) => setName(e.target.value)}
                     onKeyPress={handleKeyPress}
+                    onFocus={handleInputFocus}
                 />
             )}
             <input
@@ -121,6 +168,7 @@ const AuthPage = (props) => {
                 className="input-field"
                 onChange={(e) => setEmail(e.target.value)}
                 onKeyPress={handleKeyPress}
+                onFocus={handleInputFocus}
             />
             <input
                 type="password"
@@ -128,6 +176,7 @@ const AuthPage = (props) => {
                 className="input-field"
                 onChange={(e) => setPassword(e.target.value)}
                 onKeyPress={handleKeyPress}
+                onFocus={handleInputFocus}
             />
             {isRegistering && (
                 <input
@@ -136,6 +185,7 @@ const AuthPage = (props) => {
                     className="input-field"
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     onKeyPress={handleKeyPress}
+                    onFocus={handleInputFocus}
                 />
             )}
             {error && <p className="error-message">{error}</p>}
@@ -149,7 +199,7 @@ const AuthPage = (props) => {
             </button>
             <p className="toggle-auth">
                 {isRegistering ? "Already have an account? " : "Don't have an account? "}
-                <button className="link-transfer-mode" onClick={() => setIsRegistering(!isRegistering)}>
+                <button className="link-transfer-mode" onClick={toggleAuthMode}>
                     {isRegistering ? "Sign In" : "Sign Up"}
                 </button>
             </p>

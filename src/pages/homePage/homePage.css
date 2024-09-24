@@ -150,6 +150,32 @@
     color: red;
 }
 
+.page-header {
+    display: flex;
+    align-items: center; 
+    justify-content: flex-start; 
+    background-color: var(--primary);
+    padding: 20px; 
+    position: absolute;
+    top: 0;
+    left: 0; 
+    width: 100%; 
+    z-index: 10;
+}
+
+.profile-icon {
+    cursor: pointer; 
+    font-size: var(--h2-font); 
+    color: var(--accent-light); 
+    display: flex;
+    align-items: center; 
+    justify-content: center; 
+}
+
+.profile-icon:hover {
+    color: var(--accent);
+}
+
 @media (max-width: 1040px) {
     .room-name-input {
         width: 750px;

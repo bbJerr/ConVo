@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { auth, googleProvider, db } from "../../config/firebase";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, updateProfile } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
@@ -10,6 +11,7 @@ const cookies = new Cookies();
 
 const AuthPage = (props) => {
     const { setIsAuth } = props;
+    const navigate = useNavigate();
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -86,10 +88,15 @@ const AuthPage = (props) => {
                     await updateProfile(user, { displayName: name });
 
                     const userRef = doc(db, 'users', user.uid);
-                    await setDoc(userRef, { name });
+                    await setDoc(userRef, { 
+                        name,
+                        bio: '',
+                        profilePic: '',
+                     });
 
                     cookies.set("auth-token", user.refreshToken);
                     setIsAuth(true);
+                    navigate("/");
                 }
             } catch (error) {
                 console.error("Error during authentication:", error.message);
@@ -124,9 +131,14 @@ const AuthPage = (props) => {
             cookies.set("auth-token", user.refreshToken);
 
             const userRef = doc(db, 'users', user.uid);
-            await setDoc(userRef, { name: user.displayName || 'Anonymous' });
+            await setDoc(userRef, { 
+                name: user.displayName || 'Anonymous',
+                bio: '',
+                profilePic: user.photoURL || '',
+            }, { merge: true });
 
             setIsAuth(true);
+            navigate("/");
         } catch (error) {
             console.error("Error signing in with Google:", error.message);
             setError(getErrorMessage(error.code)); 

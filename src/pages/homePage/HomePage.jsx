@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { auth, db } from "../../config/firebase";
 import { doc, getDoc, updateDoc, setDoc, arrayRemove } from "firebase/firestore";
 import { useNavigate } from 'react-router-dom';
-import { FaEllipsisV } from "react-icons/fa";
+import { FaEllipsisV, FaUser } from "react-icons/fa";
 import "./homePage.css";
 
 const saveRoomToFirestore = async (userId, roomName) => {
@@ -197,6 +197,11 @@ const HomePage = ({ setRoom }) => {
 
   return (
     <div className="room">
+      <div className="page-header">
+        <div className="profile-icon">
+          <FaUser onClick={() => navigate('/profile')} />
+        </div>
+      </div>
       <div className="room-label-container">
         <label className="room-label">Enter Chat Room:</label>
         <div className="room-input-container">

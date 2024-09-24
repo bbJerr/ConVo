@@ -48,22 +48,22 @@ body {
   position: absolute;
   top: 20px;
   right: 20px;
+  z-index: 100;
 }
 
-.sign-out button {
-  padding: 10px 20px;
-  background-color: var(--accent);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 16px;
+.logout-button {
+  cursor: pointer; 
+  font-size: var(--h2-font); 
+  color: var(--accent-light); 
+  background: none;
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
 }
 
-.sign-out button:hover {
-  background-color: #e06773;
+.logout-button:hover {
+  color: #e06773;
 }
-
 
 ::-webkit-scrollbar {
   width: 8px;
@@ -71,7 +71,6 @@ body {
 
 ::-webkit-scrollbar-thumb {
   background-color: var(--primary);
-  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-track {

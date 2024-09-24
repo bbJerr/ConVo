@@ -9,6 +9,8 @@
     display: flex; 
     align-items: center; 
     margin-top: 100px;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .profile-picture {
@@ -71,6 +73,7 @@
     border-radius: 5px;
     cursor: pointer;
     margin-right: 5px;
+    font-size: 1rem;
 }
 
 .save-button:hover {
@@ -85,6 +88,7 @@
     color: #e06773;
     border-radius: 5px;
     cursor: pointer;
+    font-size: 1rem;
 }
 
 .cancel-button:hover {
@@ -121,4 +125,61 @@
 
 .edit-buttons.visible {
     display: flex; 
+}
+
+@media (max-width: 768px) {
+    .profile-info {
+        flex-direction: column; 
+        align-items: center; 
+        justify-content: center; 
+    }
+
+    .profile-picture {
+        width: 250px; 
+        height: 250px;
+        margin-right: 0; 
+        margin-bottom: 20px; 
+    }
+
+    .name-container {
+        justify-content: center;
+        text-align: center;
+    }
+
+    .separator {
+        width: 100%; 
+    }
+
+    .bio-textarea {
+        width: 90vw; 
+        max-width: 600px;
+        height: 150px;
+    }
+
+    .save-button, .cancel-button {
+        width: auto; 
+        margin: 0 5px;
+    }
+
+    .edit-buttons {
+        display: none; 
+        justify-content: center; 
+        width: auto; 
+        margin-top: 10px; 
+    }
+
+    .edit-buttons.visible {
+        display: flex;
+    }
+}
+
+@media (max-width: 480px) {
+    .name-container h2 {
+        font-size: 1.5rem; 
+    }
+
+    .bio-textarea {
+        font-size: 1rem;
+    }
+
 }

@@ -67,40 +67,42 @@ const Profile = () => {
     };
 
     return (
-        <div className="profile-container">
-            <div className="page-header">
-                <div className="home-icon">
-                    <FaHome onClick={() => navigate('/')} />
-                </div>
-            </div>
-            <div className="profile-info">
-                <img src={userData.profilePic} alt="Profile" className="profile-picture" />
-                <div className="user-details">
-                    <div className="name-container">
-                        <h2>{userData.name}</h2>
-                        {isOwnProfile && <FaEdit className="edit-icon" onClick={() => {
-                            setIsEditing(true);
-                            setOriginalBio(userData.bio);
-                        }} />} 
+        <div className="profile-background">
+            <div className="profile-container">
+                <div className="page-header">
+                    <div className="home-icon">
+                        <FaHome onClick={() => navigate('/')} />
                     </div>
-                    <div className="separator"></div>
-                    <textarea
-                        placeholder="User has no bio yet..." 
-                        value={userData.bio} 
-                        onChange={(e) => setUserData({ ...userData, bio: e.target.value })}
-                        className="bio-textarea" 
-                        disabled={!isEditing || !isOwnProfile} 
-                    />
-                    {isOwnProfile && ( 
-                        <div className={`edit-buttons ${isEditing ? 'visible' : ''}`}>
-                            <button className="save-button" onClick={saveBio}>
-                                Save Changes
-                            </button>
-                            <button className="cancel-button" onClick={cancelEdit}>
-                                Cancel
-                            </button>
+                </div>
+                <div className="profile-info">
+                    <img src={userData.profilePic} alt="Profile" className="profile-picture" />
+                    <div className="user-details">
+                        <div className="name-container">
+                            <h2>{userData.name}</h2>
+                            {isOwnProfile && <FaEdit className="edit-icon" onClick={() => {
+                                setIsEditing(true);
+                                setOriginalBio(userData.bio);
+                            }} />} 
                         </div>
-                    )}
+                        <div className="separator"></div>
+                        <textarea
+                            placeholder="User has no bio yet..." 
+                            value={userData.bio} 
+                            onChange={(e) => setUserData({ ...userData, bio: e.target.value })}
+                            className="bio-textarea" 
+                            disabled={!isEditing || !isOwnProfile} 
+                        />
+                        {isOwnProfile && ( 
+                            <div className={`edit-buttons ${isEditing ? 'visible' : ''}`}>
+                                <button className="save-button" onClick={saveBio}>
+                                    Save Changes
+                                </button>
+                                <button className="cancel-button" onClick={cancelEdit}>
+                                    Cancel
+                                </button>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>

@@ -44,7 +44,6 @@ function LogoutButton({ signUserOut }) {
   const location = useLocation();
   const showLogoutButton = 
     location.pathname === '/' || 
-    location.pathname === '/chat' || 
     location.pathname === '/profile' || 
     location.pathname.startsWith('/profile/');
 

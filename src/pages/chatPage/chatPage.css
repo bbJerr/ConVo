@@ -1,11 +1,10 @@
 .chat-bg {
-    background-image: url('../../images/convo-bg.png');
+    background-image: url('../../images/convo-bg2.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     height: 100vh;
-    margin: 0;
-    
+    margin: 0;   
 }
 
 .chat-container {
@@ -19,7 +18,6 @@
     background-color: #f7f7f7;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     position: relative;
-    
 }
 
 .go-back-button {

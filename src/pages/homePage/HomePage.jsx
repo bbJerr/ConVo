@@ -199,7 +199,7 @@ const HomePage = ({ setRoom }) => {
     <div className="room">
       <div className="page-header">
         <div className="profile-icon">
-          <FaUser onClick={() => navigate('/profile')} />
+          <FaUser onClick={() => navigate(`/profile/${auth.currentUser.displayName}`)} />
         </div>
       </div>
       <div className="room-label-container">

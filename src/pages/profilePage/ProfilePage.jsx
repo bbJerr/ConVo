@@ -1,22 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { FaHome, FaEdit } from "react-icons/fa";
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, query, where, getDocs, collection } from 'firebase/firestore';
 import { auth, db } from '../../config/firebase';
 import defaultProfilePic from '../../images/defaultProfilePic.png';
 import "./profilePage.css";
 
-const Profile = (props) => {
+const Profile = () => {
     const navigate = useNavigate();
+    const { name } = useParams(); 
     const [userData, setUserData] = useState({ name: '', bio: '', profilePic: defaultProfilePic });
     const [isEditing, setIsEditing] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+    const [isOwnProfile, setIsOwnProfile] = useState(false); 
+    const [originalBio, setOriginalBio] = useState('');
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
-                fetchUserData(user.uid);
+                fetchUserDataByName(name, user.uid); 
             } else {
                 console.log("User is not authenticated.");
                 setIsLoading(false);
@@ -24,19 +27,23 @@ const Profile = (props) => {
         });
 
         return () => unsubscribe();
-    }, []);
+    }, [name]);
 
-    const fetchUserData = async (uid) => {
-        const userRef = doc(db, 'users', uid);
-        const userDoc = await getDoc(userRef);
-        if (userDoc.exists()) {
+    const fetchUserDataByName = async (userName, uid) => {
+        const usersRef = collection(db, 'users');
+        const q = query(usersRef, where("name", "==", userName));
+        const querySnapshot = await getDocs(q);
+        
+        if (!querySnapshot.empty) {
+            const userDoc = querySnapshot.docs[0]; 
             const data = userDoc.data();
-            console.log("Fetched user data:", data);
             setUserData({
                 name: data.name,
                 bio: data.bio || '',
                 profilePic: data.profilePic || defaultProfilePic
             });
+            setOriginalBio(data.bio || ''); // Store the original bio
+            setIsOwnProfile(userDoc.id === uid);
         } else {
             console.log("User document does not exist.");
         }
@@ -55,6 +62,7 @@ const Profile = (props) => {
     };
 
     const cancelEdit = () => {
+        setUserData({ ...userData, bio: originalBio });
         setIsEditing(false);
     };
 
@@ -68,26 +76,31 @@ const Profile = (props) => {
             <div className="profile-info">
                 <img src={userData.profilePic} alt="Profile" className="profile-picture" />
                 <div className="user-details">
-                    <div className="name-container"> {/* New container for name and edit icon */}
+                    <div className="name-container">
                         <h2>{userData.name}</h2>
-                        <FaEdit className="edit-icon" onClick={() => setIsEditing(true)} />
+                        {isOwnProfile && <FaEdit className="edit-icon" onClick={() => {
+                            setIsEditing(true);
+                            setOriginalBio(userData.bio);
+                        }} />} 
                     </div>
                     <div className="separator"></div>
                     <textarea
-                        placeholder="Add your bio..." 
+                        placeholder="User has no bio yet..." 
                         value={userData.bio} 
                         onChange={(e) => setUserData({ ...userData, bio: e.target.value })}
                         className="bio-textarea" 
-                        disabled={!isEditing} // Disable textarea if not editing
+                        disabled={!isEditing || !isOwnProfile} 
                     />
-                    <div className={`edit-buttons ${isEditing ? 'visible' : ''}`}>
-                        <button className="save-button" onClick={saveBio}>
-                            Save Changes
-                        </button>
-                        <button className="cancel-button" onClick={cancelEdit}>
-                            Cancel
-                        </button>
-                    </div>
+                    {isOwnProfile && ( 
+                        <div className={`edit-buttons ${isEditing ? 'visible' : ''}`}>
+                            <button className="save-button" onClick={saveBio}>
+                                Save Changes
+                            </button>
+                            <button className="cancel-button" onClick={cancelEdit}>
+                                Cancel
+                            </button>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

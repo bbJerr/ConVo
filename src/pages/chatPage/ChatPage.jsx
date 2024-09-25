@@ -91,6 +91,10 @@ const Chat = (props) => {
     navigate('/'); 
   };
 
+  const handleUserClick = (name) => {
+    navigate(`/profile/${name}`);
+  };
+
   return (
     <div className="chat-bg">
       <div className="chat-container">
@@ -100,9 +104,18 @@ const Chat = (props) => {
         </div>
         <div className="messages"> 
           {messages.map((message) => (
-            <div className={`message ${message.user === auth.currentUser.displayName ? "own-message" : "other-message"}`} key={message.id}>
+            <div 
+              className={`message ${message.user === auth.currentUser.displayName ? "own-message" : "other-message"}`} 
+              key={message.id}
+            >
               {message.user !== auth.currentUser.displayName && (
-                <span className="user">{message.user}:</span>
+                <span 
+                  className="user" 
+                  onClick={() => handleUserClick(message.user)}
+                  onMouseEnter={() => console.log("Hovering over user")}
+                >
+                  {message.user}: <span className="hover-text">View profile</span>
+                </span>
               )}
               {message.text}
             </div>              

@@ -33,7 +33,7 @@ function App() {
       <Routes>
         <Route path="/" element={isAuth ? <Home setRoom={setRoom} /> : <Auth setIsAuth={setIsAuth} />} />
         <Route path="/chat" element={isAuth && room ? <Chat room={room} /> : (isAuth ? <Home setRoom={setRoom} /> : <Auth setIsAuth={setIsAuth} />)} />
-        <Route path="/profile" element={isAuth ? <Profile /> : <Auth setIsAuth={setIsAuth} />} />
+        <Route path="/profile/:name" element={isAuth ? <Profile /> : <Auth setIsAuth={setIsAuth} />} />
       </Routes>
       {isAuth && <LogoutButton signUserOut={signUserOut} />}
     </Router>
@@ -42,7 +42,11 @@ function App() {
 
 function LogoutButton({ signUserOut }) {
   const location = useLocation();
-  const showLogoutButton = location.pathname === '/' || location.pathname === '/room' || location.pathname === '/profile';
+  const showLogoutButton = 
+    location.pathname === '/' || 
+    location.pathname === '/chat' || 
+    location.pathname === '/profile' || 
+    location.pathname.startsWith('/profile/');
 
   return showLogoutButton ? (
     <div className="sign-out">

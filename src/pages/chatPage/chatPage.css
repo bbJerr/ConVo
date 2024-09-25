@@ -82,7 +82,9 @@
 
 .user {
     font-weight: bold;
-    margin-right: 10px;
+    cursor: pointer;
+    position: relative;
+    margin-right: 5px;
     color: var(--primary-dark);
 }
 
@@ -140,4 +142,21 @@
     font-style: italic;
     color: var(--primary);
     margin-bottom: 10px; 
+}
+
+.user .hover-text {
+    visibility: hidden;
+    position: absolute;
+    background-color: #f9f9f9;
+    color: var(--accent);
+    border-radius: 5px;
+    padding: 8px;
+    bottom: 25px;
+    left: 0;
+    font-size: 0.8rem;
+    white-space: nowrap;
+}
+
+.user:hover .hover-text {
+    visibility: visible;
 }

@@ -3,7 +3,12 @@ import { addDoc, collection, serverTimestamp, onSnapshot, query, where, orderBy,
 import { auth, db } from "../../config/firebase";
 import { useNavigate } from 'react-router-dom';
 import { FaArrowLeft } from "react-icons/fa";
+import { toast, ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 import "./chatPage.css";
+
+// Sound alert for new messages -nic
+const notificationSound = new Audio ("/sound/notif.mp3"); 
 
 const Chat = (props) => {   
   const { room } = props;
@@ -14,6 +19,7 @@ const Chat = (props) => {
   const messagesRef = collection(db, "messages");
   const navigate = useNavigate();
 
+  // Use effect for fetching messages and triggering toast notification -nic
   useEffect(() => {
     const queryMessages = query(
       messagesRef, 
@@ -21,14 +27,24 @@ const Chat = (props) => {
       orderBy("createdAt")
     );
     const unsubscribe = onSnapshot(queryMessages, (snapshot) => {
-      let messages = [];
+      let newMessages = [];
       snapshot.forEach((doc) => {
-        messages.push({...doc.data(), id: doc.id});
+        newMessages.push({ ...doc.data(), id: doc.id });
       });
-      setMessages(messages);
+
+      // Trigger toast notification for new messages from others -nic
+      if (newMessages.length > messages.length) {
+        const lastMessage = newMessages[newMessages.length - 1];
+        if (lastMessage.user !== auth.currentUser.displayName) {
+          showToast(lastMessage);
+          playNotificationSound();
+        }
+      }
+
+      setMessages(newMessages);
     });
     return () => unsubscribe();
-  }, [room]);
+  }, [room, messages]);
 
   useEffect(() => {
     if (messagesEndRef.current) {
@@ -95,6 +111,28 @@ const Chat = (props) => {
     navigate(`/profile/${name}`);
   };
 
+  // Function to show toast notification -nic
+  const showToast = (message) => {
+    toast.info(`${message.user} says: ${message.text}`, {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      className: "custom-toast",          
+      bodyClassName: "custom-toast-body", 
+      progressClassName: "custom-toast-progress",
+      icon: <img src="/convo-logo.png" alt="ConVo Icon" style={{ width: '24px', height: '24px', marginRight: '10px' }} />, // Custom image
+    });
+  };
+
+  // Function to play notification sound -nic
+  const playNotificationSound = () => {
+    notificationSound.play().catch(error => console.error("Error playing notification sound:", error));
+  };
+
   return (
     <div className="chat-bg">
       <div className="chat-container">
@@ -110,9 +148,8 @@ const Chat = (props) => {
             >
               {message.user !== auth.currentUser.displayName && (
                 <span 
-                  className="user" 
+                  className="user"
                   onClick={() => handleUserClick(message.user)}
-                  onMouseEnter={() => console.log("Hovering over user")}
                 >
                   {message.user}: <span className="hover-text">View profile</span>
                 </span>
@@ -139,6 +176,11 @@ const Chat = (props) => {
             Send 
           </button>
         </form> 
+
+        {/* Toast notification container  -nic*/}
+        <ToastContainer
+        toastClassName="custom-toast-container"  
+      />
       </div>
     </div>
   );

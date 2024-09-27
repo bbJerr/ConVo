@@ -158,3 +158,21 @@
 .user:hover .hover-text {
     visibility: visible;
 }
+
+/* Customize the toast container 
+.custom-toast-container {
+    
+  }
+*/
+
+  /* Customize the appearance of individual toasts
+   .custom-toast { 
+    }
+   */
+  
+  
+  /* Custom progress bar */
+  .custom-toast-progress {
+    background: var(--primary);
+  }
+  

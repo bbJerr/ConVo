@@ -1,16 +1,27 @@
 import { useEffect, useState, useRef } from "react";
-import { addDoc, collection, serverTimestamp, onSnapshot, query, where, orderBy, doc, setDoc, deleteDoc } from 'firebase/firestore';
+import {
+  addDoc,
+  collection,
+  serverTimestamp,
+  onSnapshot,
+  query,
+  where,
+  orderBy,
+  doc,
+  setDoc,
+  deleteDoc,
+} from "firebase/firestore";
 import { auth, db } from "../../config/firebase";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 import "./chatPage.css";
 
 // Sound alert for new messages -nic
-const notificationSound = new Audio ("/sound/notif.mp3"); 
+const notificationSound = new Audio("/sound/notif.mp3");
 
-const Chat = (props) => {   
+const Chat = (props) => {
   const { room } = props;
   const [newMessage, setNewMessage] = useState("");
   const [messages, setMessages] = useState([]);
@@ -22,7 +33,7 @@ const Chat = (props) => {
   // Use effect for fetching messages and triggering toast notification -nic
   useEffect(() => {
     const queryMessages = query(
-      messagesRef, 
+      messagesRef,
       where("room", "==", room),
       orderBy("createdAt")
     );
@@ -57,8 +68,10 @@ const Chat = (props) => {
     const q = query(typingStatusRef, where("room", "==", room));
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const typing = snapshot.docs.map(doc => doc.data().user);
-      setTypingUsers(typing.filter(user => user !== auth.currentUser.displayName));
+      const typing = snapshot.docs.map((doc) => doc.data().user);
+      setTypingUsers(
+        typing.filter((user) => user !== auth.currentUser.displayName)
+      );
     });
 
     return () => unsubscribe();
@@ -76,12 +89,15 @@ const Chat = (props) => {
     });
 
     setNewMessage("");
-    handleTyping(false); 
+    handleTyping(false);
   };
 
   const handleTyping = async (isTyping) => {
     const typingStatusRef = collection(db, "typingStatuses");
-    const typingDocRef = doc(typingStatusRef, `${room}_${auth.currentUser.uid}`);
+    const typingDocRef = doc(
+      typingStatusRef,
+      `${room}_${auth.currentUser.uid}`
+    );
 
     if (isTyping) {
       await setDoc(typingDocRef, {
@@ -90,21 +106,21 @@ const Chat = (props) => {
         typing: true,
       });
     } else {
-      await deleteDoc(typingDocRef); 
+      await deleteDoc(typingDocRef);
     }
   };
 
   const handleInputChange = (e) => {
     setNewMessage(e.target.value);
-    handleTyping(e.target.value !== ""); 
+    handleTyping(e.target.value !== "");
   };
 
   const handleBlur = () => {
-    handleTyping(false); 
+    handleTyping(false);
   };
 
   const goBack = () => {
-    navigate('/'); 
+    navigate("/");
   };
 
   const handleUserClick = (name) => {
@@ -113,7 +129,7 @@ const Chat = (props) => {
 
   // Function to show toast notification -nic
   const showToast = (message) => {
-    toast.info(`${message.user} says: ${message.text}`, {
+    toast.info(`${message.user}: ${message.text}`, {
       position: "top-right",
       autoClose: 5000,
       hideProgressBar: false,
@@ -121,66 +137,82 @@ const Chat = (props) => {
       pauseOnHover: true,
       draggable: true,
       progress: undefined,
-      className: "custom-toast",          
-      bodyClassName: "custom-toast-body", 
+      className: "custom-toast",
+      bodyClassName: "custom-toast-body",
       progressClassName: "custom-toast-progress",
-      icon: <img src="/convo-logo.png" alt="ConVo Icon" style={{ width: '24px', height: '24px', marginRight: '10px' }} />, // Custom image
+      icon: (
+        <img
+          src="/convo-logo.png"
+          alt="ConVo Icon"
+          style={{ width: "22px", height: "22px", marginRight: "10px" }}
+        />
+      ), // Custom image
     });
   };
 
   // Function to play notification sound -nic
   const playNotificationSound = () => {
-    notificationSound.play().catch(error => console.error("Error playing notification sound:", error));
+    notificationSound
+      .play()
+      .catch((error) =>
+        console.error("Error playing notification sound:", error)
+      );
   };
 
   return (
     <div className="chat-bg">
       <div className="chat-container">
-        <button className="go-back-button" onClick={goBack}><FaArrowLeft /></button>
-        <div className="header"> 
+        <button className="go-back-button" onClick={goBack}>
+          <FaArrowLeft />
+        </button>
+        <div className="header">
           <h1>{room}</h1>
         </div>
-        <div className="messages"> 
+        <div className="messages">
           {messages.map((message) => (
-            <div 
-              className={`message ${message.user === auth.currentUser.displayName ? "own-message" : "other-message"}`} 
+            <div
+              className={`message ${
+                message.user === auth.currentUser.displayName
+                  ? "own-message"
+                  : "other-message"
+              }`}
               key={message.id}
             >
               {message.user !== auth.currentUser.displayName && (
-                <span 
+                <span
                   className="user"
                   onClick={() => handleUserClick(message.user)}
                 >
-                  {message.user}: <span className="hover-text">View profile</span>
+                  {message.user}:{" "}
+                  <span className="hover-text">View profile</span>
                 </span>
               )}
               {message.text}
-            </div>              
+            </div>
           ))}
           {typingUsers.length > 0 && (
             <div className="typing-indicator">
-              {typingUsers.join(", ")} {typingUsers.length === 1 ? "is" : "are"} typing...
+              {typingUsers.join(", ")} {typingUsers.length === 1 ? "is" : "are"}{" "}
+              typing...
             </div>
           )}
           <div ref={messagesEndRef} />
-        </div> 
+        </div>
         <form onSubmit={handleSubmit} className="new-message-form">
-          <input 
+          <input
             placeholder="Type your message here..."
-            className="new-message-input"   
-            onChange={handleInputChange}               
+            className="new-message-input"
+            onChange={handleInputChange}
             value={newMessage}
             onBlur={handleBlur}
           />
-          <button type="submit" className="send-button"> 
-            Send 
+          <button type="submit" className="send-button">
+            Send
           </button>
-        </form> 
+        </form>
 
         {/* Toast notification container  -nic*/}
-        <ToastContainer
-        toastClassName="custom-toast-container"  
-      />
+        <ToastContainer toastClassName="custom-toast-container" />
       </div>
     </div>
   );

@@ -43,7 +43,7 @@ const Chat = (props) => {
         newMessages.push({ ...doc.data(), id: doc.id });
       });
 
-      // Trigger toast notification for new messages from others -nic
+      // Trigger toast notification for new messages from others
       if (newMessages.length > messages.length) {
         const lastMessage = newMessages[newMessages.length - 1];
         if (lastMessage.user !== auth.currentUser.displayName) {
@@ -55,7 +55,7 @@ const Chat = (props) => {
       setMessages(newMessages);
     });
     return () => unsubscribe();
-  }, [room, messages]);
+  }, [room]);
 
   useEffect(() => {
     if (messagesEndRef.current) {

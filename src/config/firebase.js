@@ -2,24 +2,14 @@ import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
-// const firebaseConfig = {
-//   apiKey: "AIzaSyC2pPtKqBoEQorfY5E1oQhVc-oxrBE7vVM",
-//   authDomain: "convo-d67f0.firebaseapp.com",
-//   projectId: "convo-d67f0",
-//   storageBucket: "convo-d67f0.appspot.com",
-//   messagingSenderId: "933162631687",
-//   appId: "1:933162631687:web:585753392024fb698f60a2",
-//   measurementId: "G-XBYSD7GW8B",
-// };
-
 const firebaseConfig = {
-  apiKey: "AIzaSyBokovOj0nN5DmUY4atWhSkK1P1m4Rm8P4",
-  authDomain: "convo-1-1f2f7.firebaseapp.com",
-  projectId: "convo-1-1f2f7",
-  storageBucket: "convo-1-1f2f7.appspot.com",
-  messagingSenderId: "454824922776",
-  appId: "1:454824922776:web:c2deed7278a8ebc3168aed",
-  measurementId: "G-W3TBGJW2DC",
+  apiKey: "AIzaSyDh40q2jBzqTBnTdEBSs0cg0IyYzYw7D34",
+  authDomain: "convo-f8ace.firebaseapp.com",
+  projectId: "convo-f8ace",
+  storageBucket: "convo-f8ace.appspot.com",
+  messagingSenderId: "169094038641",
+  appId: "1:169094038641:web:db0ca645cb33705eba47d0",
+  measurementId: "G-3160MJC9LS"
 };
 
 const app = initializeApp(firebaseConfig);
